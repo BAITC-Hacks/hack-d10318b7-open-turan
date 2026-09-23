@@ -1,0 +1,15 @@
+.env
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.models/
+models/
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.mp4
+*.docx
+

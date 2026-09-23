@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>Meeting Notes — протокол встречи</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1020;--panel:#141c31;--panel-2:#10182a;--line:#293654;--text:#f5f7ff;--muted:#aeb9d4;--accent:#8aa8ff;--green:#65d8b2;--red:#ff8299;--gold:#ffd080}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font:16px/1.55 Inter,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0,#1c3264 0,transparent 34%),radial-gradient(circle at 96% 80%,#173b3a 0,transparent 30%),var(--bg)}
+    main{width:min(1050px,calc(100% - 32px));margin:auto;padding:42px 0 70px}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);font-weight:800}h1{font-size:clamp(34px,6vw,54px);line-height:1.06;letter-spacing:-.04em;margin:8px 0 12px}.lead{max-width:760px;color:var(--muted);font-size:17px;margin:0 0 24px}.panel{background:rgba(20,28,49,.94);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 24px 70px #0004}.privacy{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:18px;border-radius:12px;background:#0d2a27;border:1px solid #265c50;color:#c8f4e4}.privacy span{font-size:20px}.privacy b{display:block;color:#e5fff5}.setup{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel-2);color:var(--muted);margin-bottom:20px}.setup.ready{border-color:#2c6958}.setup.error{border-color:#70404c}.fields{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;margin:18px 0}.field label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}.field input,.field select,.task-input,.decision-input{width:100%;border:1px solid var(--line);border-radius:10px;background:#0d1425;color:var(--text);padding:11px 12px;font:inherit}.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.button,.file-label{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:12px 17px;font:inherit;font-weight:750;cursor:pointer;transition:filter .15s,transform .15s}.button:hover,.file-label:hover{filter:brightness(1.07);transform:translateY(-1px)}.button:disabled{opacity:.45;cursor:not-allowed;transform:none}.primary{background:var(--accent);color:#071020}.stop{background:var(--red);color:#260912}.download{background:var(--green);color:#062019}.secondary,.file-label{background:#273655;color:var(--text)}input[type=file]{display:none}.option{display:flex;align-items:center;gap:9px;color:var(--muted);margin:17px 0 0}.option input{width:17px;height:17px;accent-color:var(--accent)}.status{margin-top:19px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;color:var(--muted);min-height:58px}.dot{display:inline-block;width:9px;height:9px;margin-right:9px;border-radius:50%;background:#65718b}.dot.recording{background:var(--red);box-shadow:0 0 0 5px #ff829922}.dot.processing{background:var(--gold);box-shadow:0 0 0 5px #ffd08022}.dot.done{background:var(--green);box-shadow:0 0 0 5px #65d8b222}.instructions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.tip{padding:14px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:14px}.tip b{display:block;color:var(--text);margin-bottom:4px}.consent{color:var(--muted);font-size:13px;margin:13px 0 0}.result{display:none;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}.result h2{margin:0 0 12px}.result h3{margin:24px 0 9px}.result textarea{width:100%;min-height:110px;resize:vertical;border:1px solid var(--line);border-radius:10px;background:#0d1425;color:var(--text);padding:12px;font:inherit}.hint{color:var(--muted);font-size:13px;margin:4px 0 10px}.notice{display:none;padding:12px 14px;border:1px solid #6c5730;background:#2c2415;border-radius:10px;color:#ffe7b1;margin:12px 0}.decision-list{display:grid;gap:8px}.decision-row{display:flex;gap:8px;align-items:center}.decision-input{flex:1}.icon-button{border:1px solid var(--line);border-radius:9px;background:#202b43;color:var(--text);padding:8px 11px;cursor:pointer}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:790px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#1b2740;color:#dbe4ff;font-size:13px}tr:last-child td{border-bottom:0}.task-input{min-width:95px}.evidence-input{min-width:180px;min-height:58px;resize:vertical}.task-number{color:var(--muted);text-align:center}details{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:12px 14px}summary{cursor:pointer;font-weight:700}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:500px;overflow:auto;color:#dce4fa;font:14px/1.6 ui-monospace,Consolas,monospace}.result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.footnote{font-size:13px;color:var(--muted);margin-top:14px}
+    .levels{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.level{padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);color:var(--muted);font-size:13px}.level-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:5px}.level progress{width:100%;height:9px;accent-color:var(--green)}
+    @media(max-width:760px){main{padding:25px 0 48px}.panel{padding:17px}.fields{grid-template-columns:1fr 1fr}.levels{grid-template-columns:1fr}.instructions{grid-template-columns:1fr}.lead{font-size:16px}}
+    @media(max-width:430px){.fields{grid-template-columns:1fr}.button,.file-label{width:100%}.controls{display:grid;grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Meeting Notes · локальная обработка</div>
+  <h1>Протокол встречи без ручной расшифровки</h1>
+  <p class="lead">Запишите звук встречи или загрузите файл. Проверьте сводку и задачи — затем скачайте отредактированный Word-документ.</p>
+  <section class="panel" aria-label="Обработка встречи">
+    <div class="privacy"><span aria-hidden="true">🔒</span><div><b>Ваши записи остаются на этом компьютере</b>Для распознавания используется Faster-Whisper, для анализа — локальная Ollama. Облачные API в приложении отключены.</div></div>
+    <div class="setup" id="setupStatus" role="status">Проверяем готовность локальных моделей…</div>
+    <div class="fields">
+      <div class="field"><label for="meetingTitle">Название встречи</label><input id="meetingTitle" maxlength="200" value="Протокол совещания"></div>
+      <div class="field"><label for="meetingDate">Дата</label><input id="meetingDate" type="date"></div>
+      <div class="field"><label for="audioLanguage">Язык речи</label><select id="audioLanguage"><option value="auto">Автоопределение</option><option value="ru">Русский</option><option value="kk">Қазақша</option></select></div>
+      <div class="field"><label for="outputLanguage">Язык протокола</label><select id="outputLanguage"><option value="kk">Қазақша</option><option value="ru">Русский</option></select></div>
+    </div>
+    <div class="controls">
+      <button class="button primary" id="startBtn">Начать запись</button>
+      <button class="button stop" id="stopBtn" disabled>Остановить запись</button>
+      <label class="file-label" for="fileInput">Загрузить файл встречи</label>
+      <input id="fileInput" type="file" accept="audio/*,video/mp4,video/webm">
+    </div>
+    <label class="option"><input id="micToggle" type="checkbox" checked>Добавить мой микрофон</label>
+    <div class="levels" aria-label="Уровень записываемого звука">
+      <div class="level"><div class="level-top"><span>Звук встречи / системы</span><span id="meetingLevelLabel">Нет сигнала</span></div><progress id="meetingLevel" max="100" value="0"></progress></div>
+      <div class="level"><div class="level-top"><span>Мой микрофон</span><span id="micLevelLabel">Ожидание</span></div><progress id="micLevel" max="100" value="0"></progress></div>
+    </div>
+    <p class="consent">Перед началом разговора попросите коллегу сказать пару слов и проверьте, что шкала «Звук встречи / системы» реагирует.</p>
+    <div class="status" id="statusBox"><span class="dot" id="statusDot"></span><strong id="statusTitle">Готово</strong><div id="statusText">Для записи нажмите «Начать запись», затем выберите источник со звуком.</div></div>
+    <div class="instructions">
+      <div class="tip"><b>Google Meet</b>Выберите вкладку встречи и включите «Передавать звук вкладки». Убедитесь, что голоса участников слышны в этой вкладке.</div>
+      <div class="tip"><b>Zoom</b>Выберите окно/экран и включите системный звук. Для Zoom в браузере можно выбрать вкладку и передавать её звук.</div>
+      <div class="tip"><b>Согласие</b>Сообщите всем участникам о записи и соблюдайте правила организации.</div>
+    </div>
+    <p class="consent">Важное ограничение: пока нет автоматического распознавания людей по голосу. Имена добавляются только если участник явно назвал себя.</p>
+
+    <div class="result" id="resultBox">
+      <h2>Проверьте проект протокола</h2>
+      <div class="notice" id="qualityWarning"></div>
+      <p class="hint">Это черновик. Проверьте его по записи до утверждения.</p>
+      <h3>Краткое резюме</h3>
+      <textarea id="summaryText" maxlength="6000" aria-label="Краткое резюме"></textarea>
+      <h3>Принятые решения</h3>
+      <div class="decision-list" id="decisionList"></div>
+      <button class="icon-button" id="addDecisionBtn" type="button">+ Добавить решение</button>
+      <h3>Участники, явно упомянутые в речи</h3>
+      <p class="hint" id="speakersText">Не определено</p>
+      <h3>Задачи</h3>
+      <p class="hint">Основание для автоматически найденной задачи нельзя незаметно подменить: проверьте цитату. Добавленные вручную задачи помечаются отдельно.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>№</th><th>Задача</th><th>Ответственный</th><th>Срок</th><th>Цитата-основание</th><th></th></tr></thead>
+          <tbody id="taskRows"></tbody>
+        </table>
+      </div>
+      <button class="icon-button" id="addTaskBtn" type="button" style="margin-top:10px">+ Добавить задачу вручную</button>
+      <details><summary>Полная расшифровка</summary><pre id="transcriptText"></pre></details>
+      <label class="option"><input id="includeTranscript" type="checkbox" checked>Включить полную расшифровку в Word</label>
+      <div class="result-actions"><button class="button download" id="downloadBtn">Подтвердить и скачать Word</button></div>
+      <p class="footnote">DOCX формируется по значениям на экране в момент скачивания. Измените таблицу до загрузки файла, если нашли неточности.</p>
+    </div>
+  </section>
+</main>
+<script>
+  const $ = (selector) => document.querySelector(selector);
+  const startBtn = $('#startBtn');
+  const stopBtn = $('#stopBtn');
+  const fileInput = $('#fileInput');
+  const resultBox = $('#resultBox');
+  const MAX_RECORDING_BYTES = 24_000_000;
+  const MAX_UPLOAD_BYTES = 25_000_000;
+  let recorder = null;
+  let displayStream = null;
+  let micStream = null;
+  let audioContext = null;
+  let chunks = [];
+  let recordedBytes = 0;
+  let timerId = null;
+  let meterFrame = null;
+  let meetingAnalyser = null;
+  let micAnalyser = null;
+  let startedAt = 0;
+  let currentTaskId = null;
+  let localReady = false;
+
+  function setStatus(kind, title, text) {
+    $('#statusDot').className = `dot ${kind || ''}`;
+    $('#statusTitle').textContent = title;
+    $('#statusText').textContent = text;
+  }
+
+  function formatTime(seconds) {
+    return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+  }
+
+  async function refreshSetupStatus() {
+    const box = $('#setupStatus');
+    try {
+      const response = await fetch('/health', { cache: 'no-store' });
+      const health = await response.json();
+      localReady = Boolean(health.faster_whisper_installed && health.ollama_online && health.ollama_model_available);
+      if (localReady) {
+        box.className = 'setup ready';
+        box.textContent = `Локальные модели готовы · Whisper: ${health.whisper_model} · Ollama: ${health.ollama_model}`;
+      } else {
+        const missing = [];
+        if (!health.faster_whisper_installed) missing.push('пакет Faster-Whisper (перезапустите start.bat)');
+        if (!health.ollama_online) missing.push('установите и запустите Ollama');
+        else if (!health.ollama_model_available) missing.push(`загрузите модель: ollama pull ${health.ollama_model}`);
+        box.className = 'setup error';
+        box.textContent = `Для локальной обработки не хватает: ${missing.join('; ')}.`;
+      }
+    } catch {
+      localReady = false;
+      box.className = 'setup error';
+      box.textContent = 'Не удалось связаться с локальным сервером. Запустите start.bat и обновите страницу.';
+    }
+  }
+
+  function stopTracks() {
+    displayStream?.getTracks().forEach((track) => track.stop());
+    micStream?.getTracks().forEach((track) => track.stop());
+    if (audioContext && audioContext.state !== 'closed') audioContext.close();
+    displayStream = null;
+    micStream = null;
+    audioContext = null;
+    clearInterval(timerId);
+    if (meterFrame !== null) cancelAnimationFrame(meterFrame);
+    meterFrame = null;
+    meetingAnalyser = null;
+    micAnalyser = null;
+    $('#meetingLevel').value = 0;
+    $('#micLevel').value = 0;
+    $('#meetingLevelLabel').textContent = 'Нет сигнала';
+    $('#micLevelLabel').textContent = 'Ожидание';
+  }
+
+  function readAudioLevel(analyser, progress, label) {
+    if (!analyser) {
+      progress.value = 0;
+      label.textContent = 'Выключен';
+      return;
+    }
+    const samples = new Uint8Array(analyser.fftSize);
+    analyser.getByteTimeDomainData(samples);
+    let squareSum = 0;
+    for (const sample of samples) {
+      const normalized = (sample - 128) / 128;
+      squareSum += normalized * normalized;
+    }
+    const level = Math.min(100, Math.round(Math.sqrt(squareSum / samples.length) * 320));
+    progress.value = level;
+    label.textContent = level > 2 ? 'Сигнал есть' : 'Нет сигнала';
+  }
+
+  function updateAudioMeters() {
+    readAudioLevel(meetingAnalyser, $('#meetingLevel'), $('#meetingLevelLabel'));
+    readAudioLevel(micAnalyser, $('#micLevel'), $('#micLevelLabel'));
+    if (recorder?.state === 'recording') meterFrame = requestAnimationFrame(updateAudioMeters);
+  }
+
+  function recordingMetadata(form) {
+    form.append('meeting_title', $('#meetingTitle').value.trim() || 'Протокол совещания');
+    form.append('meeting_date', $('#meetingDate').value);
+    form.append('language', $('#audioLanguage').value);
+    form.append('output_language', $('#outputLanguage').value);
+  }
+
+  async function startRecording() {
+    if (!localReady) {
+      await refreshSetupStatus();
+      if (!localReady) {
+        setStatus('', 'Сначала настройте локальные модели', 'Запись не отправляется в облако. Выполните команды установки, указанные в подсказке над кнопками.');
+        return;
+      }
+    }
+    if (!$('#meetingDate').value) {
+      setStatus('', 'Укажите дату', 'Выберите дату встречи перед записью.');
+      $('#meetingDate').focus();
+      return;
+    }
+    resultBox.style.display = 'none';
+    chunks = [];
+    recordedBytes = 0;
+    try {
+      displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      if (!displayStream.getAudioTracks().length) {
+        throw new Error('Звук встречи не выбран. Выберите вкладку Meet со звуком или системный звук Zoom.');
+      }
+      audioContext = new AudioContext();
+      await audioContext.resume();
+      const destination = audioContext.createMediaStreamDestination();
+      const meetingSource = audioContext.createMediaStreamSource(new MediaStream(displayStream.getAudioTracks()));
+      meetingSource.connect(destination);
+      meetingAnalyser = audioContext.createAnalyser();
+      meetingAnalyser.fftSize = 512;
+      meetingSource.connect(meetingAnalyser);
+      if ($('#micToggle').checked) {
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+        const micSource = audioContext.createMediaStreamSource(micStream);
+        micSource.connect(destination);
+        micAnalyser = audioContext.createAnalyser();
+        micAnalyser.fftSize = 512;
+        micSource.connect(micAnalyser);
+      }
+      const mimeType = ['audio/webm;codecs=opus', 'audio/webm'].find((type) => MediaRecorder.isTypeSupported(type));
+      recorder = new MediaRecorder(destination.stream, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: 64000 });
+      recorder.ondataavailable = (event) => {
+        if (!event.data.size) return;
+        chunks.push(event.data);
+        recordedBytes += event.data.size;
+        if (recordedBytes >= MAX_RECORDING_BYTES && recorder.state === 'recording') {
+          setStatus('processing', 'Достигнут предел размера', 'Запись остановлена и будет обработана.');
+          recorder.stop();
+        }
+      };
+      recorder.onstop = async () => {
+        stopTracks();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        await uploadRecording(new Blob(chunks, { type: mimeType || 'audio/webm' }), 'meeting.webm');
+      };
+      recorder.onerror = (event) => {
+        stopTracks();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        setStatus('', 'Ошибка записи', event.error?.message || 'Не удалось записать звук.');
+      };
+      displayStream.getVideoTracks()[0]?.addEventListener('ended', () => {
+        if (recorder?.state === 'recording') recorder.stop();
+      });
+      recorder.start(4000);
+      updateAudioMeters();
+      startedAt = Date.now();
+      timerId = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+        setStatus('recording', `Идёт запись ${formatTime(elapsed)}`, 'Записывается выбранная вкладка/экран и, если включено, микрофон. Удалённые участники должны быть слышны в выбранном источнике.');
+      }, 1000);
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      setStatus('recording', 'Идёт запись 00:00', 'Записывается выбранная вкладка/экран и, если включено, микрофон. Удалённые участники должны быть слышны в выбранном источнике.');
+    } catch (error) {
+      stopTracks();
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+      setStatus('', 'Запись не началась', error.message || String(error));
+    }
+  }
+
+  function stopRecording() {
+    if (recorder?.state === 'recording') {
+      stopBtn.disabled = true;
+      setStatus('processing', 'Подготовка записи', 'Файл готовится для локальной обработки.');
+      recorder.stop();
+    }
+  }
+
+  async function uploadRecording(blob, filename) {
+    if (!blob.size) {
+      setStatus('', 'Пустая запись', 'В файле нет звука. Проверьте источник записи.');
+      return;
+    }
+    if (blob.size > MAX_UPLOAD_BYTES) {
+      setStatus('', 'Файл больше 25 МБ', 'Сократите запись или разделите её на несколько частей.');
+      return;
+    }
+    startBtn.disabled = true;
+    fileInput.disabled = true;
+    try {
+      if (!localReady) await refreshSetupStatus();
+      if (!localReady) throw new Error('Сначала запустите локальную модель Ollama и загрузите указанную модель.');
+      setStatus('processing', 'Загрузка на локальный сервер', `${(blob.size / 1024 / 1024).toFixed(1)} МБ передаются только на этот компьютер.`);
+      const form = new FormData();
+      form.append('file', blob, filename);
+      recordingMetadata(form);
+      const response = await fetch('/transcribe', { method: 'POST', body: form });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.detail || 'Не удалось отправить файл');
+      currentTaskId = payload.task_id;
+      await pollTask(currentTaskId);
+    } catch (error) {
+      setStatus('', 'Не удалось обработать файл', error.message || String(error));
+    } finally {
+      startBtn.disabled = false;
+      fileInput.disabled = false;
+    }
+  }
+
+  async function pollTask(taskId) {
+    const deadline = Date.now() + 15 * 60 * 1000;
+    setStatus('processing', 'Локальная расшифровка', 'Первый запуск модели может занять больше времени. Оставьте страницу открытой.');
+    while (Date.now() < deadline) {
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+      const response = await fetch(`/transcribe/${taskId}`, { cache: 'no-store' });
+      const task = await response.json();
+      if (!response.ok) throw new Error(task.detail || 'Задача обработки не найдена');
+      if (task.status === 'error') throw new Error(task.error || 'Ошибка обработки');
+      if (task.status === 'done') {
+        showResult(task.result);
+        return;
+      }
+    }
+    throw new Error('Обработка заняла слишком много времени. Проверьте локальные модели и попробуйте меньшую модель.');
+  }
+
+  function makeDecisionRow(value = '') {
+    const row = document.createElement('div');
+    row.className = 'decision-row';
+    const input = document.createElement('input');
+    input.className = 'decision-input';
+    input.maxLength = 1000;
+    input.value = value;
+    input.placeholder = 'Решение, подтверждённое разговором';
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'icon-button';
+    remove.textContent = 'Убрать';
+    remove.addEventListener('click', () => row.remove());
+    row.append(input, remove);
+    $('#decisionList').append(row);
+  }
+
+  function makeTaskRow(item = {}) {
+    const row = document.createElement('tr');
+    row.dataset.task = 'true';
+    const number = document.createElement('td');
+    number.className = 'task-number';
+    const fields = {};
+    for (const key of ['task', 'responsible', 'deadline', 'evidence']) {
+      const cell = document.createElement('td');
+      const input = key === 'evidence' ? document.createElement('textarea') : document.createElement('input');
+      input.className = `task-input${key === 'evidence' ? ' evidence-input' : ''}`;
+      input.dataset.field = key;
+      input.value = item[key] || (key === 'evidence' && item.manual ? 'Добавлено пользователем' : '');
+      input.maxLength = key === 'task' || key === 'evidence' ? 2000 : 300;
+      if (key === 'task') input.placeholder = 'Что нужно сделать';
+      if (key === 'responsible') input.placeholder = 'Не определено';
+      if (key === 'deadline') input.placeholder = 'Не определено';
+      if (key === 'evidence') {
+        input.placeholder = 'Цитата из транскрипта или пометка о ручном вводе';
+        input.readOnly = !item.manual;
+      }
+      fields[key] = input;
+      cell.append(input);
+      row.append(cell);
+    }
+    const actionCell = document.createElement('td');
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'icon-button';
+    remove.textContent = '×';
+    remove.setAttribute('aria-label', 'Удалить задачу');
+    remove.addEventListener('click', () => {
+      row.remove();
+      renumberTasks();
+    });
+    actionCell.append(remove);
+    row.prepend(number);
+    row.append(actionCell);
+    $('#taskRows').append(row);
+    renumberTasks();
+  }
+
+  function renumberTasks() {
+    $('#taskRows').querySelectorAll('tr[data-task]').forEach((row, index) => {
+      row.cells[0].textContent = String(index + 1);
+    });
+  }
+
+  function collectTasks() {
+    return [...$('#taskRows').querySelectorAll('tr[data-task]')].map((row) => {
+      const item = {};
+      row.querySelectorAll('[data-field]').forEach((field) => { item[field.dataset.field] = field.value.trim(); });
+      return item;
+    }).filter((item) => item.task);
+  }
+
+  function showResult(result) {
+    $('#summaryText').value = result.summary || '';
+    $('#decisionList').replaceChildren();
+    (result.decisions || []).forEach((item) => makeDecisionRow(item));
+    if (!result.decisions?.length) makeDecisionRow();
+    $('#speakersText').textContent = result.speakers?.length ? result.speakers.join(', ') : 'Не определено';
+    $('#taskRows').replaceChildren();
+    (result.tasks || []).forEach((item) => makeTaskRow(item));
+    $('#transcriptText').textContent = result.transcript_text || 'Речь не распознана.';
+    const warning = $('#qualityWarning');
+    warning.textContent = result.quality_warning || (result.status === 'unclear' ? 'Содержимое записи не получилось надёжно распознать. Проверьте исходное аудио.' : '');
+    warning.style.display = warning.textContent ? 'block' : 'none';
+    resultBox.style.display = 'block';
+    setStatus('done', 'Черновик готов', 'Проверьте каждую задачу и её цитату-основание. Word будет создан из отредактированных полей.');
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function downloadDocument() {
+    if (!currentTaskId) return;
+    const button = $('#downloadBtn');
+    button.disabled = true;
+    try {
+      const payload = {
+        meeting_title: $('#meetingTitle').value.trim() || 'Протокол совещания',
+        meeting_date: $('#meetingDate').value,
+        summary: $('#summaryText').value.trim(),
+        decisions: [...$('#decisionList').querySelectorAll('.decision-input')].map((input) => input.value.trim()).filter(Boolean),
+        speakers: $('#speakersText').textContent === 'Не определено' ? [] : $('#speakersText').textContent.split(',').map((name) => name.trim()).filter(Boolean),
+        tasks: collectTasks(),
+        transcript_text: $('#includeTranscript').checked ? $('#transcriptText').textContent : null,
+      };
+      const response = await fetch(`/transcribe/${currentTaskId}/document`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Не удалось создать Word');
+      }
+      const objectUrl = URL.createObjectURL(await response.blob());
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = `meeting_minutes_${payload.meeting_date.replaceAll('-', '')}.docx`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      setStatus('done', 'Word-документ скачан', 'В документ попали текущие исправления и выбранная расшифровка.');
+    } catch (error) {
+      setStatus('', 'Не удалось создать Word', error.message || String(error));
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  startBtn.addEventListener('click', startRecording);
+  stopBtn.addEventListener('click', stopRecording);
+  $('#addTaskBtn').addEventListener('click', () => makeTaskRow({ manual: true, responsible: 'Не определено', deadline: 'Не определено' }));
+  $('#addDecisionBtn').addEventListener('click', () => makeDecisionRow());
+  $('#downloadBtn').addEventListener('click', downloadDocument);
+  fileInput.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (file) await uploadRecording(file, file.name);
+    event.target.value = '';
+  });
+  $('#meetingDate').value = new Date().toISOString().slice(0, 10);
+  refreshSetupStatus();
+</script>
+</body>
+</html>
+
