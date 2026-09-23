@@ -1,124 +1,93 @@
-"""
-docx_generator.py
-Кеңестің хаттамасын (.docx) дайын форматта жасайтын модуль.
-"""
+"""Түзетілген деректерден DOCX хаттамасын құрастыру."""
 
 import io
-from datetime import datetime
 
 from docx import Document
-from docx.shared import Pt, Cm
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.shared import Cm, Pt, RGBColor
 
-
-def _set_cell_shading(cell, color_hex: str = "D9E2F3"):
-    """Кестенің ұяшығына фон түсін қосады (тақырып жолын бөлектеу үшін)."""
-    tc_pr = cell._tc.get_or_add_tcPr()
-    shd = tc_pr.makeelement(
-        qn("w:shd"),
-        {
-            qn("w:val"): "clear",
-            qn("w:color"): "auto",
-            qn("w:fill"): color_hex,
-        },
-    )
-    tc_pr.append(shd)
+from utils import clean_text, normalize_tasks
 
 
 def generate_protocol_docx(
-    meeting_title: str,
-    meeting_date: str,
-    summary: str,
-    speakers: list,
-    tasks: list,
-    transcript_text: str = None,
+    meeting_title: str, meeting_date: str, summary: str,
+    speakers: list, tasks: list, transcript_text: str | None = None,
 ) -> io.BytesIO:
-    """
-    Кеңестің хаттамасын .docx файл ретінде жасайды және BytesIO буферін қайтарады.
-
-    :param meeting_title: Кеңестің атауы
-    :param meeting_date: Кеңес өткен күн (жол)
-    :param summary: Қысқаша қорытынды (саммари)
-    :param speakers: Спикерлер тізімі (list[str])
-    :param tasks: Тапсырмалар тізімі
-                  (list[dict], әр dict: task, responsible, deadline)
-    :param transcript_text: Толық транскрипт (міндетті емес, қосымша ретінде кіреді)
-    :return: io.BytesIO — дайын .docx файлдың байттары
-    """
+    rows = normalize_tasks(tasks)
+    if speakers is None:
+        speakers = []
+    if not isinstance(speakers, (list, tuple)):
+        raise ValueError("Сөйлеушілер тізім түрінде берілуі керек.")
+    names = list(dict.fromkeys(name for item in speakers if (name := clean_text(item, ""))))
     doc = Document()
+    section = doc.sections[0]
+    section.page_width, section.page_height = Cm(21), Cm(29.7)
+    section.top_margin = section.bottom_margin = Cm(2)
+    section.left_margin = section.right_margin = Cm(2)
+    for name in ("Normal", "Title", "Heading 1"):
+        style = doc.styles[name]
+        style.font.name = "Times New Roman"
+        style.font.color.rgb = RGBColor(0, 0, 0)
+        style.font.size = Pt(18 if name == "Title" else 13 if name == "Heading 1" else 12)
+    doc.styles["Normal"].paragraph_format.space_after = Pt(6)
 
-    # Негізгі стиль
-    style = doc.styles["Normal"]
-    style.font.name = "Times New Roman"
-    style.font.size = Pt(12)
+    paragraph = doc.add_paragraph(clean_text(meeting_title, "Кеңес хаттамасы"), "Title")
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph = doc.add_paragraph(f"Күні: {clean_text(meeting_date)}")
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    doc.add_heading("Мәтінде расталған сөйлеушілер", level=1)
+    for name in names or ["Анықталмады"]:
+        doc.add_paragraph(name)
+    doc.add_heading("Қысқаша қорытынды", level=1)
+    doc.add_paragraph(clean_text(summary))
+    doc.add_heading("Тапсырмалар", level=1)
 
-    # Атауы
-    title = doc.add_heading(meeting_title or "Кеңестің хаттамасы", level=0)
-    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-    # Күні
-    date_p = doc.add_paragraph()
-    date_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    date_run = date_p.add_run(
-        f"Күні: {meeting_date or datetime.now().strftime('%Y-%m-%d')}"
-    )
-    date_run.italic = True
-
-    # Қатысушылар
-    doc.add_heading("Қатысушылар (спикерлер)", level=1)
-    if speakers:
-        for sp in speakers:
-            doc.add_paragraph(str(sp), style="List Bullet")
-    else:
-        doc.add_paragraph("Анықталмады")
-
-    # Саммари
-    doc.add_heading("Қысқаша қорытынды (Саммари)", level=1)
-    doc.add_paragraph(summary or "—")
-
-    # Тапсырмалар кестесі
-    doc.add_heading("Тапсырмалар кестесі", level=1)
-
-    if tasks:
+    if rows:
         table = doc.add_table(rows=1, cols=4)
         table.style = "Table Grid"
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
-
-        headers = ["№", "Тапсырма", "Жауапты (Ответственный)", "Мерзімі (Срок)"]
-        hdr_cells = table.rows[0].cells
-        for i, h in enumerate(headers):
-            hdr_cells[i].text = h
-            for p in hdr_cells[i].paragraphs:
-                for r in p.runs:
-                    r.bold = True
-            _set_cell_shading(hdr_cells[i])
-
-        col_widths = [Cm(1.2), Cm(8), Cm(4), Cm(3)]
+        table.autofit = False
+        widths = [Cm(0.8), Cm(8.2), Cm(4.5), Cm(3.5)]
+        for column, width in zip(table.columns, widths):
+            column.width = width
+        for cell, text in zip(table.rows[0].cells, ["№", "Тапсырма", "Жауапты тұлға", "Мерзім"]):
+            cell.text = text
+            shade = OxmlElement("w:shd")
+            shade.set(qn("w:fill"), "D9E2F3")
+            cell._tc.get_or_add_tcPr().append(shade)
+            for run in cell.paragraphs[0].runs:
+                run.bold = True
+            cell.paragraphs[0].paragraph_format.keep_with_next = True
+        header = OxmlElement("w:tblHeader")
+        table.rows[0]._tr.get_or_add_trPr().append(header)
+        for number, task in enumerate(rows, 1):
+            cells = table.add_row().cells
+            values = [str(number), task["task"], task["responsible"], task["deadline"]]
+            for cell, value in zip(cells, values):
+                cell.text = value
         for row in table.rows:
-            for idx, cell in enumerate(row.cells):
-                cell.width = col_widths[idx]
-
-        for i, task in enumerate(tasks, start=1):
-            row_cells = table.add_row().cells
-            row_cells[0].text = str(i)
-            row_cells[1].text = str(task.get("task", ""))
-            row_cells[2].text = str(task.get("responsible", "Анықталмады"))
-            row_cells[3].text = str(task.get("deadline", "Анықталмады"))
-            for cell in row_cells:
-                cell.width = col_widths[row_cells.index(cell)]
+            for index, (cell, width) in enumerate(zip(row.cells, widths)):
+                cell.width = width
+                cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                for paragraph in cell.paragraphs:
+                    paragraph.paragraph_format.space_after = Pt(4)
+                    paragraph.paragraph_format.space_before = Pt(4)
+                    if index == 0:
+                        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
     else:
         doc.add_paragraph("Тапсырмалар табылмады.")
 
-    # Толық транскриптті қосымша ретінде қосу (міндетті емес)
-    if transcript_text:
+    transcript = clean_text(transcript_text, "")
+    if transcript:
         doc.add_page_break()
-        doc.add_heading("Толық транскрипт (қосымша)", level=1)
-        p = doc.add_paragraph(transcript_text)
-        for run in p.runs:
-            run.font.size = Pt(10)
-
+        doc.add_heading("Толық транскрипт", level=1)
+        for line in transcript.splitlines():
+            paragraph = doc.add_paragraph(line)
+            for run in paragraph.runs:
+                run.font.size = Pt(10)
     buffer = io.BytesIO()
     doc.save(buffer)
     buffer.seek(0)
