@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meeting Notes</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1020; --panel:rgba(21,29,52,.86); --line:#2b385c; --text:#f5f7ff; --muted:#aeb9d4; --accent:#7c9cff; --accent2:#65d8b2; --danger:#ff748d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter,"Segoe UI",Arial,sans-serif; color:var(--text); background:radial-gradient(circle at 15% 10%,#1d3568 0,transparent 32%),radial-gradient(circle at 90% 85%,#143f42 0,transparent 28%),var(--bg); }
+    main { width:min(920px,calc(100% - 32px)); margin:0 auto; padding:64px 0; }
+    .eyebrow { color:var(--accent2); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:12px; }
+    h1 { margin:10px 0 14px; max-width:720px; font-size:clamp(36px,7vw,64px); line-height:1.02; letter-spacing:-.04em; }
+    .lead { max-width:680px; margin:0 0 32px; color:var(--muted); font-size:18px; line-height:1.6; }
+    .panel { padding:26px; border:1px solid var(--line); border-radius:22px; background:var(--panel); backdrop-filter:blur(18px); box-shadow:0 24px 80px rgba(0,0,0,.28); }
+    .controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    button,.file-label { border:0; border-radius:12px; padding:13px 18px; font:inherit; font-weight:700; cursor:pointer; transition:transform .15s ease,opacity .15s ease; }
+    button:hover,.file-label:hover { transform:translateY(-1px); }
+    button:disabled { opacity:.42; cursor:not-allowed; transform:none; }
+    #startBtn { background:var(--accent); color:#071020; }
+    #stopBtn { background:var(--danger); color:#240810; }
+    .file-label { background:#263657; color:var(--text); }
+    input[type=file] { display:none; }
+    .option { margin:18px 0; display:flex; gap:10px; align-items:center; color:var(--muted); }
+    .status { margin-top:20px; padding:16px; border:1px solid var(--line); border-radius:14px; color:var(--muted); line-height:1.5; }
+    .status strong { color:var(--text); }
+    .dot { display:inline-block; width:9px; height:9px; margin-right:8px; border-radius:50%; background:#6c7896; }
+    .dot.recording { background:var(--danger); box-shadow:0 0 0 6px rgba(255,116,141,.14); }
+    .dot.processing { background:#ffc767; box-shadow:0 0 0 6px rgba(255,199,103,.12); }
+    .dot.done { background:var(--accent2); box-shadow:0 0 0 6px rgba(101,216,178,.12); }
+    .result { display:none; margin-top:22px; }
+    .result h2 { margin-bottom:8px; }
+    .result p,.result li { color:#dce4fa; line-height:1.6; }
+    .result section { margin-top:22px; }
+    #downloadBtn { margin-top:22px; background:var(--accent2); color:#062019; }
+    .tips { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; }
+    .tip { padding:16px; border:1px solid var(--line); border-radius:14px; color:var(--muted); font-size:14px; line-height:1.5; }
+    .tip b { display:block; color:var(--text); margin-bottom:6px; }
+    @media (max-width:700px) { main{padding:36px 0}.tips{grid-template-columns:1fr}.panel{padding:20px} }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Meeting Notes</div>
+    <h1>Протокол совещания без ручных заметок</h1>
+    <p class="lead">Запишите звук из Google Meet или Zoom, получите резюме, решения, задачи и готовый документ Word.</p>
+    <div class="panel">
+      <div class="controls">
+        <button id="startBtn">Начать запись</button>
+        <button id="stopBtn" disabled>Остановить запись</button>
+        <label class="file-label" for="fileInput">Загрузить готовую запись</label>
+        <input id="fileInput" type="file" accept="audio/*,video/mp4,video/webm">
+      </div>
+      <label class="option"><input id="micToggle" type="checkbox" checked>Добавить мой микрофон к записи</label>
+      <div class="status" id="statusBox"><span class="dot" id="statusDot"></span><strong id="statusTitle">Готово к записи</strong><div id="statusText">Нажмите «Начать запись», затем выберите вкладку встречи и включите передачу звука.</div></div>
+      <div class="result" id="resultBox">
+        <h2 id="resultTitle"></h2><p id="resultSummary"></p>
+        <section><h3>Основные вопросы</h3><ul id="keyPoints"></ul></section>
+        <section><h3>Решения</h3><ul id="decisions"></ul></section>
+        <section><h3>Задачи</h3><ul id="actions"></ul></section>
+        <button id="downloadBtn">Скачать Word</button>
+      </div>
+    </div>
+    <div class="tips">
+      <div class="tip"><b>Google Meet</b>Выберите вкладку Meet и поставьте галочку «Передавать звук вкладки».</div>
+      <div class="tip"><b>Zoom</b>Выберите весь экран и включите «Поделиться системным аудио».</div>
+      <div class="tip"><b>Согласие</b>Сообщите участникам о записи до её начала.</div>
+    </div>
+  </main>
+  <script>
+    const startBtn=document.querySelector('#startBtn'),stopBtn=document.querySelector('#stopBtn'),fileInput=document.querySelector('#fileInput'),micToggle=document.querySelector('#micToggle'),statusDot=document.querySelector('#statusDot'),statusTitle=document.querySelector('#statusTitle'),statusText=document.querySelector('#statusText'),resultBox=document.querySelector('#resultBox');
+    const MAX_RECORDING_BYTES=24*1024*1024;
+    let recorder=null,displayStream=null,micStream=null,audioContext=null,chunks=[],recordedBytes=0,timerId=null,startedAt=null,currentTaskId=null;
+    function setStatus(kind,title,text){statusDot.className=`dot ${kind||''}`;statusTitle.textContent=title;statusText.textContent=text}
+    function stopTracks(){displayStream?.getTracks().forEach(t=>t.stop());micStream?.getTracks().forEach(t=>t.stop());if(audioContext&&audioContext.state!=='closed')audioContext.close();displayStream=null;micStream=null;audioContext=null;clearInterval(timerId)}
+    function formatTime(total){return `${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`}
+    async function startRecording(){
+      resultBox.style.display='none';chunks=[];recordedBytes=0;
+      try{
+        displayStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+        if(!displayStream.getAudioTracks().length)throw new Error('Звук не выбран. Повторите и включите передачу звука вкладки или системы.');
+        audioContext=new AudioContext();await audioContext.resume();const destination=audioContext.createMediaStreamDestination();
+        audioContext.createMediaStreamSource(new MediaStream(displayStream.getAudioTracks())).connect(destination);
+        if(micToggle.checked){micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});audioContext.createMediaStreamSource(micStream).connect(destination)}
+        const mimeType=['audio/webm;codecs=opus','audio/webm'].find(type=>MediaRecorder.isTypeSupported(type));
+        recorder=new MediaRecorder(destination.stream,{...(mimeType?{mimeType}:{}),audioBitsPerSecond:24000});
+        recorder.ondataavailable=event=>{if(!event.data.size)return;chunks.push(event.data);recordedBytes+=event.data.size;if(recordedBytes>=MAX_RECORDING_BYTES&&recorder.state==='recording'){setStatus('processing','Лимит записи достигнут','Запись остановлена и отправляется на обработку.');recorder.stop()}};
+        recorder.onstop=async()=>{stopTracks();startBtn.disabled=false;stopBtn.disabled=true;await uploadRecording(new Blob(chunks,{type:mimeType||'audio/webm'}),'meeting.webm')};
+        recorder.onerror=event=>{stopTracks();setStatus('','Ошибка записи',event.error?.message||'Не удалось записать звук.')};
+        displayStream.getVideoTracks()[0]?.addEventListener('ended',()=>{if(recorder?.state==='recording')recorder.stop()});
+        recorder.start(5000);startedAt=Date.now();timerId=setInterval(()=>{const elapsed=Math.floor((Date.now()-startedAt)/1000);setStatus('recording',`Идёт запись ${formatTime(elapsed)}`,'Не закрывайте эту страницу. После совещания нажмите «Остановить запись».')},1000);
+        startBtn.disabled=true;stopBtn.disabled=false;setStatus('recording','Идёт запись 00:00','Не закрывайте эту страницу. После совещания нажмите «Остановить запись».');
+      }catch(error){stopTracks();startBtn.disabled=false;stopBtn.disabled=true;setStatus('','Запись не началась',error.message||String(error))}
+    }
+    function stopRecording(){if(recorder?.state==='recording'){stopBtn.disabled=true;setStatus('processing','Подготовка записи','Файл готовится к отправке.');recorder.stop()}}
+    async function uploadRecording(blob,filename){
+      if(!blob.size){setStatus('','Пустая запись','В записи нет данных. Попробуйте ещё раз.');return}
+      if(blob.size>25*1024*1024){setStatus('','Файл слишком большой','Максимальный размер — 25 МБ.');return}
+      try{setStatus('processing','Загрузка записи',`${(blob.size/1024/1024).toFixed(1)} МБ отправляется на сервер.`);const form=new FormData();form.append('file',blob,filename);const response=await fetch('/transcribe',{method:'POST',body:form});const payload=await response.json();if(!response.ok)throw new Error(payload.detail||'Ошибка загрузки');currentTaskId=payload.task_id;await pollTask(currentTaskId)}catch(error){setStatus('','Не удалось обработать запись',error.message||String(error))}
+    }
+    async function pollTask(taskId){setStatus('processing','Расшифровка совещания','Обычно это занимает несколько минут. Не закрывайте страницу.');while(true){await new Promise(r=>setTimeout(r,2500));const response=await fetch(`/transcribe/${taskId}`);const task=await response.json();if(!response.ok)throw new Error(task.detail||'Не удалось получить статус');if(task.status==='error')throw new Error(task.error||'Ошибка обработки');if(task.status==='done'){showResult(task.result);return}}}
+    function fillList(selector,items,emptyText){const list=document.querySelector(selector);list.replaceChildren();const values=items?.length?items:[emptyText];values.forEach(value=>{const item=document.createElement('li');item.textContent=value;list.appendChild(item)})}
+    function showResult(result){document.querySelector('#resultTitle').textContent=result.title||'Протокол совещания';document.querySelector('#resultSummary').textContent=result.summary||'Резюме не сформировано.';fillList('#keyPoints',result.key_points,'Основные вопросы не выделены.');fillList('#decisions',result.decisions,'Явные решения не зафиксированы.');fillList('#actions',result.action_items,'Конкретные задачи не зафиксированы.');resultBox.style.display='block';setStatus('done','Документ готов','Проверьте результат и скачайте протокол Word.');resultBox.scrollIntoView({behavior:'smooth',block:'start'})}
+    startBtn.addEventListener('click',startRecording);stopBtn.addEventListener('click',stopRecording);
+    fileInput.addEventListener('change',async event=>{const file=event.target.files[0];if(file)await uploadRecording(file,file.name);event.target.value=''});
+    document.querySelector('#downloadBtn').addEventListener('click',()=>{if(currentTaskId)window.location.href=`/transcribe/${currentTaskId}/document`});
+  </script>
+</body>
+</html>
