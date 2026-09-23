@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#155c4f"><title>Meeting Notes · Пространство встреч</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23155c4f'/%3E%3Cpath d='M18 25v14m9-22v30m10-35v40m9-27v14' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css"><script src="/static/app.js" defer></script>
+</head>
+<body>
+<svg class="svg-library" aria-hidden="true"><defs>
+<symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 9v6m5-11v16m6-13v10m5-7v4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="m7 8 5-5 5 5M12 3v12M4 15v5h16v-5"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 12h8m-8 4h6"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 5m0 3h.01"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+</defs></svg>
+<div class="app-shell">
+<aside class="sidebar">
+<a class="brand" href="/" aria-label="Meeting Notes — главная"><span class="brand-icon"><svg><use href="#i-wave"/></svg></span><span>meeting<span class="brand-light">notes</span><small>ПРОСТРАНСТВО ВСТРЕЧ</small></span></a>
+<div class="workspace"><span class="workspace-avatar">M</span><div>Моё пространство<small>На этом компьютере</small></div><span class="workspace-dot"></span></div>
+<div class="nav-caption">РАБОЧИЙ СТОЛ</div>
+<nav class="navigation" aria-label="Основная навигация">
+<a class="nav-item active" href="#workspace"><svg><use href="#i-plus"/></svg>Новая встреча</a>
+<button class="nav-item" id="openResultBtn" disabled><svg><use href="#i-file"/></svg>Текущий протокол<span id="resultIndicator" class="count-badge" hidden>1</span></button>
+<a class="nav-item" href="#guide"><svg><use href="#i-help"/></svg>Как пользоваться</a>
+</nav>
+<div class="sidebar-bottom"><div class="local-card"><svg><use href="#i-shield"/></svg><b>Личное остаётся личным</b><p>Обработка на компьютере.<br>Без облака и API-ключей.</p><span>LOCAL FIRST</span></div><div class="version">Meeting Notes <span>v4.0</span></div></div>
+</aside>
+<div class="page">
+<header class="topbar"><div class="breadcrumbs">Рабочее пространство <span>/</span> <b>Новая встреча</b></div><div class="top-right"><span class="connection" id="connectionLabel"><i></i>Проверяем сервер</span><span class="profile" title="Локальный пользователь">M</span></div></header>
+<main id="workspace">
+<div class="page-heading"><div><div class="eyebrow">ОТ РАЗГОВОРА К ДЕЙСТВИЯМ</div><h1>Каждая встреча — по делу.</h1><p>Запишите разговор. Сохраните решения. Двигайтесь дальше.</p></div><span class="date-chip" id="todayLabel"></span></div>
+<section class="hero" aria-label="Возможности приложения"><div class="hero-copy"><span class="hero-label"><span class="sparkle">✦</span> ВАШ ПОМОЩНИК НА ВСТРЕЧАХ</span><h2>Слушайте внимательно.<br>Заметки возьмём на себя.</h2><p>Из аудио — в понятный протокол с задачами,<br class="desktop-only"> ответственными и следующими шагами.</p><div class="hero-tags"><span><svg><use href="#i-check"/></svg>Русский и қазақша</span><span><svg><use href="#i-shield"/></svg>Локальная обработка</span></div></div><div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="floating-note"><span class="note-top"><i></i>Протокол встречи</span><span class="note-line"></span><span class="note-line short"></span><div class="note-check"><svg><use href="#i-check"/></svg><span>Решения зафиксированы</span></div></div><div class="wave-tile"><svg><use href="#i-wave"/></svg></div><div class="art-dot dot-one"></div><div class="art-dot dot-two"></div></div></section>
+<ol class="stepper" aria-label="Этапы работы"><li class="current" id="step1"><span>01</span><div>Добавьте встречу<small>Аудио, запись или текст</small></div></li><li id="step2"><span>02</span><div>Дождитесь обработки<small>Всё на вашем компьютере</small></div></li><li id="step3"><span>03</span><div>Проверьте и сохраните<small>Готовый документ Word</small></div></li></ol>
+<div class="content-grid">
+<div class="main-column">
+<section class="card input-card" aria-labelledby="inputHeading">
+<div class="card-header"><div><h2 id="inputHeading">Новая встреча</h2><p>Начните с деталей и выберите источник</p></div><span class="section-index">01</span></div>
+<div class="fields"><div class="field title-field"><label for="meetingTitle">Название встречи</label><input id="meetingTitle" maxlength="200" value="Встреча команды" placeholder="Например, планирование недели"></div><div class="field"><label for="meetingDate">Дата встречи</label><input id="meetingDate" type="date" required></div><div class="field"><label for="audioLanguage">Язык записи</label><select id="audioLanguage"><option value="auto">Определить автоматически</option><option value="ru">Русский</option><option value="kk">Қазақша</option></select></div><div class="field"><label for="outputLanguage">Язык протокола</label><select id="outputLanguage"><option value="kk">Қазақша</option><option value="ru">Русский</option></select></div></div>
+<div class="source-tabs" role="tablist" aria-label="Источник встречи"><button id="tab-upload" role="tab" aria-selected="true" aria-controls="source-upload" data-source="upload"><svg><use href="#i-upload"/></svg>Загрузить файл</button><button id="tab-record" role="tab" aria-selected="false" aria-controls="source-record" data-source="record" tabindex="-1"><svg><use href="#i-mic"/></svg>Записать встречу</button><button id="tab-text" role="tab" aria-selected="false" aria-controls="source-text" data-source="text" tabindex="-1"><svg><use href="#i-file"/></svg>Готовый текст</button></div>
+<div id="source-upload" class="source-panel" role="tabpanel" aria-labelledby="tab-upload">
+<div class="dropzone" id="dropzone"><div class="upload-icon"><svg><use href="#i-upload"/></svg></div><h3 id="fileTitle">Перетащите запись сюда</h3><p id="fileDescription">или выберите файл на компьютере</p><button class="button secondary" id="chooseFileBtn">Выбрать файл <span>↗</span></button><input id="fileInput" type="file" accept=".mp3,.wav,.m4a,.mp4,.webm,.ogg,.flac,.mpeg,.mpga" hidden><small>MP3, WAV, M4A, MP4, WebM, OGG, FLAC · до 25 МБ</small></div>
+<button class="button primary full" id="processFileBtn" disabled><span>Создать протокол</span><svg><use href="#i-arrow"/></svg></button>
+</div>
+<div id="source-record" class="source-panel" role="tabpanel" aria-labelledby="tab-record" hidden>
+<div class="record-intro"><span class="upload-icon"><svg><use href="#i-mic"/></svg></span><div><h3>Пусть важное останется</h3><p>Выберите вкладку встречи и включите передачу звука.</p></div><b class="record-timer" id="recordTimer">00:00</b></div>
+<label class="option"><input id="micToggle" type="checkbox" checked>Добавить мой микрофон</label>
+<div class="levels"><div class="level"><div>Звук встречи <span id="meetingLevelLabel">Ожидание</span></div><progress id="meetingLevel" max="100" value="0" aria-label="Уровень звука встречи"></progress></div><div class="level"><div>Мой микрофон <span id="micLevelLabel">Ожидание</span></div><progress id="micLevel" max="100" value="0" aria-label="Уровень микрофона"></progress></div></div>
+<div class="record-actions"><button class="button primary" id="startBtn"><svg><use href="#i-mic"/></svg>Начать запись</button><button class="button stop" id="stopBtn" disabled><span class="stop-square"></span>Остановить запись</button></div><a id="saveRecording" class="text-link" hidden>Сохранить исходную запись</a>
+<p class="hint">Для Meet выберите вкладку со звуком. Для Zoom — экран с системным звуком. Перед записью сообщите об этом участникам.</p>
+</div>
+<div id="source-text" class="source-panel" role="tabpanel" aria-labelledby="tab-text" hidden><label class="text-label" for="transcriptInput">Вставьте расшифровку или заметки встречи</label><textarea id="transcriptInput" maxlength="60000" rows="7" placeholder="Айжан: Я подготовлю план запуска к пятнице…"></textarea><div class="text-tools"><button class="text-link" id="sampleBtn" type="button">Вставить учебный пример</button><span id="characterCount">0 / 60 000</span></div><button class="button primary full" id="processTextBtn">Создать протокол <svg><use href="#i-arrow"/></svg></button><p class="hint">Если модель анализа не настроена, текст откроется в редакторе для ручного заполнения.</p></div>
+</section>
+<div class="status-card" id="statusBox" role="status" aria-live="polite"><span class="status-icon" id="statusIcon"><svg><use href="#i-check"/></svg></span><div><strong id="statusTitle">Всё начинается с разговора</strong><p id="statusText">Добавьте запись или текст — и здесь появится ход обработки.</p></div><button class="text-link" id="resumeBtn" hidden>Продолжить ожидание</button></div>
+</div>
+<aside class="right-column">
+<section class="card guide-card" id="guide"><span class="small-label">ТРИ ПРОСТЫХ ШАГА</span><h2>От встречи<br>к результату</h2><div class="guide-step"><span>1</span><div><b>Добавьте разговор</b><p>Загрузите запись или начните новую прямо здесь.</p></div></div><div class="guide-step"><span>2</span><div><b>Проверьте детали</b><p>Уточните решения, ответственных и сроки.</p></div></div><div class="guide-step"><span>3</span><div><b>Скачайте Word</b><p>Ваши исправления попадут в готовый документ.</p></div></div><div class="guide-foot"><svg><use href="#i-file"/></svg><span>Задачи с цитатами<br>из исходного разговора</span></div></section>
+<section class="card model-card"><div class="model-heading"><h3>Готовность системы</h3><button id="refreshSetupBtn" class="icon-button" aria-label="Обновить статус моделей" title="Обновить">↻</button></div><div class="model-row"><span class="model-icon"><svg><use href="#i-wave"/></svg></span><div><b>Распознавание</b><small id="whisperName">Whisper</small></div><span class="model-dot" id="whisperDot"></span></div><div class="model-row"><span class="model-icon"><svg><use href="#i-file"/></svg></span><div><b>Анализ текста</b><small id="ollamaName">Ollama</small></div><span class="model-dot" id="ollamaDot"></span></div><p id="setupStatus" class="setup" role="status">Проверяем локальные модели…</p><p class="model-note">При первом запуске распознавания скачиваются веса модели.</p></section>
+</aside>
+</div>
+<section class="card result-card" id="resultBox" hidden aria-labelledby="resultHeading"><div class="card-header"><div><span class="eyebrow">САМОЕ ВАЖНОЕ — ПОД РУКОЙ</span><h2 id="resultHeading">Протокол встречи</h2><p>Проверьте черновик по записи перед отправкой коллегам.</p></div><span class="draft-badge">ЧЕРНОВИК</span></div><div id="qualityWarning" class="notice" hidden></div>
+<div class="result-grid"><div><label class="editor-label" for="summaryText">Краткое резюме</label><textarea id="summaryText" maxlength="6000" rows="5" placeholder="Кратко опишите главные темы и итоги встречи"></textarea><div class="editor-heading"><h3>Принятые решения</h3><button class="text-link" id="addDecisionBtn">+ Добавить решение</button></div><div class="decision-list" id="decisionList"></div></div><div class="participants-card"><label class="editor-label" for="speakersInput">Участники</label><p class="hint">Имена, явно названные в разговоре. Можно уточнить вручную.</p><textarea id="speakersInput" rows="4" maxlength="30000" placeholder="Каждый участник с новой строки"></textarea><p class="hint">Распознавание людей по голосу не выполняется.</p></div></div>
+<div class="editor-heading task-heading"><h3>Задачи <span id="taskCount" class="count-badge">0</span></h3><button class="text-link" id="addTaskBtn">+ Добавить задачу вручную</button></div><div class="empty-tasks" id="emptyTasks"><svg><use href="#i-check"/></svg>Задач пока нет. Добавьте договорённости из встречи.</div><div class="table-wrap" id="tasksTable" hidden><table><thead><tr><th>№</th><th>Что сделать</th><th>Ответственный</th><th>Срок</th><th>Цитата-основание</th><th><span class="sr-only">Действия</span></th></tr></thead><tbody id="taskRows"></tbody></table></div>
+<details class="transcript-details"><summary><svg><use href="#i-wave"/></svg>Полная расшифровка<span>Показать текст</span></summary><pre id="transcriptText"></pre></details>
+<div class="export-bar"><div><label class="option"><input id="includeTranscript" type="checkbox" checked>Включить расшифровку в документ</label><p>Скачивается версия с вашими исправлениями.</p></div><button class="button primary" id="downloadBtn"><svg><use href="#i-download"/></svg>Скачать Word</button></div></section>
+<footer class="page-footer"><span><svg><use href="#i-shield"/></svg>Ваша встреча. Ваши данные. Ваш компьютер.</span><span>Сделано для осмысленных встреч</span></footer>
+</main></div></div>
+</body></html>
